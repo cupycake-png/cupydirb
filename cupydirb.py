@@ -100,14 +100,19 @@ try:
 	half_2 = full_content[:len(full_content) // 2]
 
 	# defining a thread for each half to run simultaneously
-	thread1 = Thread(target=brute_force, args=(url, half_1))
+	thread1 = Thread(target=brute_force, daemon=True, args=(url, half_1))
 	# start thread
 	thread1.start()
 
 	# defining another thread for the second half
-	thread2 = Thread(target=brute_force, args=(url, half_2))
+	thread2 = Thread(target=brute_force, daemon=True, args=(url, half_2))
 	# starting the thread
 	thread2.start()
+
+	# join the threads momentarily to allow for keyboard interrupt to have an effect
+	while(thread1.is_alive()):
+		thread1.join(1)
+		thread2.join(1)
 
 # if CTRL+C is pressed, display and exit
 except KeyboardInterrupt:
